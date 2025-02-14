@@ -3,9 +3,14 @@
   "module": "src/index.ts",
   "type": "module",
   "devDependencies": {
-    "@types/bun": "latest"
+    "@types/bun": "latest",
+    "prettier": "^3.5.1"
   },
   "peerDependencies": {
     "typescript": "^5.0.0"
+  },
+  "dependencies": {
+    "bun-bagel": "^1.1.0",
+    "zod": "^3.24.2"
   }
 }
