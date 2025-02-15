@@ -47,18 +47,23 @@ export const formatFlights = (flights: {
   return { arrivals, departures };
 };
 
-export const postFlights = async (flights: {
-  arrivals: FlightItemProps[];
-  departures: FlightItemProps[];
-}) => {
+export const postFlights = async (
+  flights: {
+    arrivals: FlightItemProps[];
+    departures: FlightItemProps[];
+  },
+  airportCode: string,
+  endpoint = process.env.TRMNL_WEBHOOK as string
+) => {
   const data = {
     merge_variables: {
       arrivals: flights.arrivals,
       departures: flights.departures,
+      airportCode,
     },
   };
 
-  return await fetch(process.env.TRMNL_WEBHOOK as string, {
+  return await fetch(endpoint, {
     method: "POST",
     body: JSON.stringify(data),
     headers: {

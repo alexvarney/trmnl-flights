@@ -1,4 +1,7 @@
 import z from "zod";
+import path from "path";
+import { env } from "bun";
+import fs from "fs/promises";
 
 export const Airport = z
   .object({
@@ -45,6 +48,13 @@ export const FlightsAPIResponse = z
 
 export type FlightsAPIResponse = z.infer<typeof FlightsAPIResponse>;
 
+const SerializedFlights = z.object({
+  timestamp: z.string(),
+  data: FlightsAPIResponse,
+});
+
+export type SerializedFlights = z.infer<typeof SerializedFlights>;
+
 const getTimeString = (date: Date) => {
   const isoString = date.toISOString();
   const withoutMilliseconds = isoString.substring(0, 19) + "Z";
@@ -69,12 +79,62 @@ export const fetchFlights = async (airportCode: string) => {
   return FlightsAPIResponse.parse(response);
 };
 
-export const writeFlightsToFile = async (
-  airportCode: string,
-  flights: FlightsAPIResponse
+export const writeFlights = async (
+  icaoCode: string,
+  flights: FlightsAPIResponse,
+  dataDir: string
 ) => {
-  await Bun.write(
-    `./fixtures/${airportCode.toLowerCase()}-flights.json`,
-    JSON.stringify(flights, null, 2)
-  );
+  const code = icaoCode.toLowerCase();
+
+  const tempFilePath = path.join(dataDir, `${code}-flights-temp.json`);
+  const finalFilePath = path.join(dataDir, `${code}-flights.json`);
+
+  // Write to a temporary file using Bun.write
+  try {
+    await Bun.write(
+      tempFilePath,
+      JSON.stringify({
+        code,
+        data: flights,
+        timestamp: new Date().toISOString(),
+      })
+    );
+  } catch (error) {
+    console.error("Error writing to temp file:", error);
+    return; // Exit early if writing fails
+  }
+
+  try {
+    await fs.rename(tempFilePath, finalFilePath);
+  } catch (error) {
+    console.error("Error renaming file:", error);
+    // Handle the error appropriately.  Maybe retry, or log and exit.
+    // Consider deleting the temp file if the rename fails.
+    try {
+      await Bun.file(tempFilePath)
+        .exists()
+        .then(async (exists) => {
+          if (exists) {
+            await Bun.file(tempFilePath).delete();
+          }
+        });
+    } catch (unlinkError) {
+      console.error("Error deleting temp file:", unlinkError);
+    }
+  }
+};
+
+export const readFlightsFromFile = async (
+  airportCode: string,
+  path: string
+) => {
+  try {
+    const data = await Bun.file(
+      `${path}${airportCode.toLowerCase()}-flights.json`
+    ).json();
+    return SerializedFlights.parse(data);
+  } catch (error) {
+    console.error(error);
+    return null;
+  }
 };
