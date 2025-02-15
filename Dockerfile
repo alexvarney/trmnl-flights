@@ -1,7 +1,7 @@
 # use the official Bun image
 # see all versions at https://hub.docker.com/r/oven/bun/tags
 FROM oven/bun:1 AS base
-WORKDIR /usr/src/app
+WORKDIR /app
 
 # install dependencies into temp directory
 # this will cache them and speed up future builds
@@ -27,10 +27,10 @@ FROM base AS release
 RUN mkdir -p /app/data && chmod 777 /app/data
 WORKDIR /app
 COPY --from=install /temp/prod/node_modules node_modules
-COPY --from=prerelease /usr/src/app/src ./src
-COPY --from=prerelease /usr/src/app/package.json .
+COPY --from=prerelease /app/src ./src
+COPY --from=prerelease /app/package.json .
 
 # run the app
 # Running as root to allow writing to mounted volumes
 EXPOSE 3000/tcp
-ENTRYPOINT [ "bun", "run", "./src/index.ts" ]
+ENTRYPOINT [ "bun", "run", "src/index.ts" ]
