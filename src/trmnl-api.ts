@@ -8,18 +8,25 @@ type FlightItemProps = {
   aircraft: string;
 };
 
-const formatEta = (eta: string | null) => {
+const formatEta = (eta: string | null, tz: string) => {
   if (!eta) {
     return "";
   }
 
   const date = new Date(eta);
-  const month = date.toLocaleDateString("en-US", { month: "short" });
-  const day = date.toLocaleDateString("en-US", { day: "numeric" });
+  const month = date.toLocaleDateString("en-US", {
+    month: "short",
+    timeZone: tz,
+  });
+  const day = date.toLocaleDateString("en-US", {
+    day: "numeric",
+    timeZone: tz,
+  });
   const time = date.toLocaleTimeString("en-US", {
     hour: "2-digit",
     minute: "2-digit",
     hourCycle: "h23",
+    timeZone: tz,
   });
   return `${month} ${day} – ${time}`;
 };
@@ -52,7 +59,7 @@ export const formatFlights = (flights: {
     .map((f) => ({
       displayName: f.ident,
       location: f.origin?.name,
-      eta: formatEta(f.estimated_in),
+      eta: formatEta(f.estimated_in, f.destination?.timezone ?? "UTC"),
       status: f.status,
       aircraft: f.aircraft_type,
     })) as FlightItemProps[];
@@ -62,7 +69,7 @@ export const formatFlights = (flights: {
     .map((f) => ({
       displayName: f.ident,
       location: f.destination?.name,
-      eta: formatEta(f.estimated_out),
+      eta: formatEta(f.estimated_out, f.origin?.timezone ?? "UTC"),
       status: f.status,
       aircraft: f.aircraft_type,
     })) as FlightItemProps[];

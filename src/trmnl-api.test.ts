@@ -28,7 +28,7 @@ describe("formatFlights", () => {
     expect(formattedArrival).toBeDefined();
     expect(formattedArrival.displayName).toBe(mockArrival.ident);
     expect(formattedArrival.location).toBe(mockArrival.origin?.name);
-    expect(formattedArrival.eta).toBe("Feb 15 – 03:35");
+    expect(formattedArrival.eta).toBe("Feb 14 – 22:35");
     expect(formattedArrival.status).toBe(mockArrival.status);
     expect(formattedArrival.aircraft).toBe(mockArrival.aircraft_type);
   });
@@ -44,7 +44,7 @@ describe("formatFlights", () => {
     expect(formattedDeparture).toBeDefined();
     expect(formattedDeparture.displayName).toBe(mockDeparture.ident);
     expect(formattedDeparture.location).toBe(mockDeparture.destination?.name);
-    expect(formattedDeparture.eta).toBe("Feb 15 – 03:50");
+    expect(formattedDeparture.eta).toBe("Feb 14 – 22:50");
     expect(formattedDeparture.status).toBe(mockDeparture.status);
     expect(formattedDeparture.aircraft).toBe(mockDeparture.aircraft_type);
   });
