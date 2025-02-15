@@ -12,8 +12,8 @@ const Environment = z.object({
   FLIGHT_DATA_PATH: z.string(),
   TRMNL_WEBHOOK: z.string(),
   FLIGHTAWARE_API_KEY: z.string(),
-  FLIGHTAWARE_FETCH_INTERVAL_MS: z.number(),
-  TRMNL_POST_INTERVAL_MS: z.number(),
+  FLIGHTAWARE_FETCH_INTERVAL_MS: z.string().transform(Number),
+  TRMNL_POST_INTERVAL_MS: z.string().transform(Number),
 });
 
 const env = Environment.parse(process.env);
