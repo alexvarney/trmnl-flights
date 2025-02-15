@@ -1,5 +1,12 @@
 import { mock } from "bun-bagel";
-import { afterAll, beforeAll, describe, expect, it } from "bun:test";
+import {
+  afterAll,
+  beforeAll,
+  describe,
+  expect,
+  it,
+  setSystemTime,
+} from "bun:test";
 import YKFFlights from "../fixtures/cykf-flights.json";
 import FlightsFixture from "../fixtures/flights-endpoint.json";
 import {
@@ -17,6 +24,8 @@ describe("flights api", () => {
     mock("https://aeroapi.flightaware.com/aeroapi/airports/*", {
       data: YKFFlights,
     });
+
+    setSystemTime(new Date("2025-02-14T20:47:08Z"));
   });
 
   it("should parse the flights fixture data", () => {
