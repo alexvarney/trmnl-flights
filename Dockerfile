@@ -33,4 +33,4 @@ COPY --from=prerelease /usr/src/app/package.json .
 # run the app
 # Running as root to allow writing to mounted volumes
 EXPOSE 3000/tcp
-ENTRYPOINT [ "bun", "run", "src/index.ts" ]
+ENTRYPOINT [ "bun", "run", "./src/index.ts" ]
