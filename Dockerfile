@@ -23,6 +23,9 @@ COPY . .
 
 # copy production dependencies and source code into final image
 FROM base AS release
+# Create the data directory with appropriate permissions
+RUN mkdir -p /app/data && chmod 777 /app/data
+WORKDIR /app
 COPY --from=install /temp/prod/node_modules node_modules
 COPY --from=prerelease /usr/src/app/src ./src
 COPY --from=prerelease /usr/src/app/package.json .
