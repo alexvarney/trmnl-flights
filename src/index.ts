@@ -12,12 +12,11 @@ const Environment = z.object({
   FLIGHT_DATA_PATH: z.string(),
   TRMNL_WEBHOOK: z.string(),
   FLIGHTAWARE_API_KEY: z.string(),
+  FLIGHTAWARE_FETCH_INTERVAL_MS: z.number(),
+  TRMNL_POST_INTERVAL_MS: z.number(),
 });
 
 const env = Environment.parse(process.env);
-
-const FLIGHTAWARE_FETCH_INTERVAL = 1000 * 60 * 60 * 4; // 4 hours
-const TRMNL_POST_INTERVAL = 1000 * 60 * 5; // 5 minutes
 
 const updateFlights = async (icaoCode: string) => {
   console.log("Updating flights for", icaoCode);
@@ -42,7 +41,7 @@ const startUpdater = (delay: number) => {
         flights = updatedData;
         updateTrmnl(env.AIRPORT_CODE);
       });
-    }, FLIGHTAWARE_FETCH_INTERVAL);
+    }, env.FLIGHTAWARE_FETCH_INTERVAL_MS);
   }, delay);
 
   console.log("TRMNL Flight Updater Started...");
@@ -76,7 +75,7 @@ const main = async () => {
 
   if (cachedFlights) {
     const timestamp = new Date(cachedFlights.timestamp);
-    const nextUpdate = timestamp.getTime() + FLIGHTAWARE_FETCH_INTERVAL;
+    const nextUpdate = timestamp.getTime() + env.FLIGHTAWARE_FETCH_INTERVAL_MS;
 
     const now = new Date();
 
@@ -93,7 +92,7 @@ const main = async () => {
     startUpdater(0);
   }
 
-  setInterval(() => updateTrmnl(airport), TRMNL_POST_INTERVAL);
+  setInterval(() => updateTrmnl(airport), env.TRMNL_POST_INTERVAL_MS);
   updateTrmnl(airport);
 };
 
