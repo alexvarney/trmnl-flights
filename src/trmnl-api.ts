@@ -1,5 +1,4 @@
-import flightsFixture from "../fixtures/cykf-flights.json";
-import { FlightsAPIResponse, Flight } from "./flights-api";
+import { Flight } from "./flights-api";
 
 type FlightItemProps = {
   displayName: string;
@@ -9,14 +8,30 @@ type FlightItemProps = {
   aircraft: string;
 };
 
-export const postFlights = async (flights: {
+const formatEta = (eta: string | null) => {
+  if (!eta) {
+    return "";
+  }
+
+  const date = new Date(eta);
+  const month = date.toLocaleDateString("en-US", { month: "short" });
+  const day = date.toLocaleDateString("en-US", { day: "numeric" });
+  const time = date.toLocaleTimeString("en-US", {
+    hour: "2-digit",
+    minute: "2-digit",
+    hourCycle: "h23",
+  });
+  return `${month} ${day} – ${time}`;
+};
+
+export const formatFlights = (flights: {
   arrivals: Flight[];
   departures: Flight[];
 }) => {
   const arrivals = flights.arrivals.map((f) => ({
     displayName: f.ident,
     location: f.origin?.name,
-    eta: f.estimated_in,
+    eta: formatEta(f.estimated_in),
     status: f.status,
     aircraft: f.aircraft_type,
   })) as FlightItemProps[];
@@ -24,15 +39,22 @@ export const postFlights = async (flights: {
   const departures = flights.departures.map((f) => ({
     displayName: f.ident,
     location: f.destination?.name,
-    eta: f.estimated_out,
+    eta: formatEta(f.estimated_out),
     status: f.status,
     aircraft: f.aircraft_type,
   })) as FlightItemProps[];
 
+  return { arrivals, departures };
+};
+
+export const postFlights = async (flights: {
+  arrivals: FlightItemProps[];
+  departures: FlightItemProps[];
+}) => {
   const data = {
     merge_variables: {
-      arrivals,
-      departures,
+      arrivals: flights.arrivals,
+      departures: flights.departures,
     },
   };
 

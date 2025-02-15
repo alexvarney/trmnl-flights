@@ -1,13 +1,15 @@
-import { fetchFlights, writeFlightsToFile } from "./flights-api";
-import { postFlights } from "./trmnl-api";
+import { fetchFlights } from "./flights-api";
+import { formatFlights, postFlights } from "./trmnl-api";
 
 const main = async () => {
   const flights = await fetchFlights("CYKF");
-  await postFlights({
+
+  const formatted = formatFlights({
     arrivals: flights.scheduled_arrivals,
     departures: flights.scheduled_departures,
   });
-  writeFlightsToFile("CYKF", flights);
+
+  await postFlights(formatted);
 };
 
 main();

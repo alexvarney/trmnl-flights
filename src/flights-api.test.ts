@@ -27,8 +27,8 @@ describe("flights api", () => {
     expect(flights).toBeDefined();
 
     expect(
-      flights.scheduled_arrivals.find((f) => f.ident === "FLE2451")
+      flights.scheduled_arrivals.find((f) => f.ident === "FLE2401")
         ?.fa_flight_id
-    ).toBe("FLE2451-1739342011-airline-1496p");
+    ).toBe("FLE2401-1739342011-airline-1495p");
   });
 });

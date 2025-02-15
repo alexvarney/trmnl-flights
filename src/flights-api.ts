@@ -21,6 +21,8 @@ export const Flight = z
     status: z.string().nullable(),
     progress_percent: z.number().nullable(),
     type: z.string().nullable(),
+    estimated_in: z.string().nullable(),
+    estimated_out: z.string().nullable(),
   })
   .passthrough();
 
