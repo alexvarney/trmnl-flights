@@ -1,0 +1,42 @@
+<div class="layout layout--row layout--stretch">
+  <div class="grid grid--cols-2">
+    <div class="col col--start gap--medium">
+      <span class="title">Arrivals</span>
+      {% for flight in arrivals %}
+        <div class="item">
+          <div class="meta"></div>
+          <div class="content">
+            <span class="title title--small">{{ flight.displayName }}</span>
+            <span class="description">{{ flight.location }}</span>
+            <div class="flex gap--small">
+              <span class="label label--small label--underline">{{ flight.eta }}</span>
+              <span class="label label--small label--underline">{{ flight.status }}</span>
+              <span class="label label--small label--underline">{{ flight.aircraft }}</span>
+            </div>
+          </div>
+        </div>
+      {% endfor %}
+    </div>
+    <div class="col col--start gap--medium">
+      <span class="title">Departures</span>
+      {% for flight in departures %}
+        <div class="item">
+          <div class="meta"></div>
+          <div class="content">
+            <span class="title title--small">{{ flight.displayName }}</span>
+            <span class="description">{{ flight.location }}</span>
+            <div class="flex gap--small">
+              <span class="label label--small label--underline">{{ flight.eta }}</span>
+              <span class="label label--small label--underline">{{ flight.status }}</span>
+              <span class="label label--small label--underline">{{ flight.aircraft }}</span>
+            </div>
+          </div>
+        </div>
+      {% endfor %}
+    </div>
+  </div>
+</div>
+<div class="title_bar">
+  <img class="image" src="/images/plugins/trmnl--render.svg">
+  <span class="title">CYKF Flights</span>
+</div>

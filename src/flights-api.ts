@@ -24,6 +24,8 @@ export const Flight = z
   })
   .passthrough();
 
+export type Flight = z.infer<typeof Flight>;
+
 export const FlightsAPIResponse = z
   .object({
     arrivals: z.array(Flight),
@@ -39,7 +41,7 @@ export const FlightsAPIResponse = z
   })
   .passthrough();
 
-type FlightsAPIResponse = z.infer<typeof FlightsAPIResponse>;
+export type FlightsAPIResponse = z.infer<typeof FlightsAPIResponse>;
 
 const getTimeString = (date: Date) => {
   const isoString = date.toISOString();
@@ -63,4 +65,14 @@ export const fetchFlights = async (airportCode: string) => {
   }).then((res) => res.json());
 
   return FlightsAPIResponse.parse(response);
+};
+
+export const writeFlightsToFile = async (
+  airportCode: string,
+  flights: FlightsAPIResponse
+) => {
+  await Bun.write(
+    `./fixtures/${airportCode.toLowerCase()}-flights.json`,
+    JSON.stringify(flights, null, 2)
+  );
 };
