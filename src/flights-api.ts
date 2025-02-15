@@ -74,9 +74,25 @@ export const fetchFlights = async (airportCode: string) => {
     headers: {
       "x-Apikey": process.env.FLIGHTAWARE_API_KEY as string,
     },
-  }).then((res) => res.json());
+  });
 
-  return FlightsAPIResponse.parse(response);
+  if (response.status !== 200) {
+    console.error(response);
+    return null;
+  }
+
+  const json = await response.json();
+
+  if (json == null) {
+    return null;
+  }
+
+  try {
+    return FlightsAPIResponse.parse(json);
+  } catch (error) {
+    console.log(json);
+    console.error(error);
+  }
 };
 
 export const writeFlights = async (

@@ -22,6 +22,12 @@ const updateFlights = async (icaoCode: string) => {
   console.log("Updating flights for", icaoCode);
 
   const apiData = await fetchFlights(icaoCode);
+
+  if (apiData == null) {
+    console.log("Failed to fetch flights for", icaoCode);
+    return null;
+  }
+
   await writeFlights(icaoCode, apiData, env.FLIGHT_DATA_PATH);
 
   return apiData;
