@@ -68,7 +68,9 @@ const updateTrmnl = async (icaoCode: string) => {
     arrivals: cachedFlights.scheduled_arrivals,
     departures: cachedFlights.scheduled_departures,
   });
-  await postFlights(formattedFlights, icaoCode);
+  await postFlights(formattedFlights, icaoCode).catch((err) => {
+    console.error("Failed to post flights to TRMNL", err);
+  });
 };
 
 const main = async () => {
